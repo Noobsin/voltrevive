@@ -652,32 +652,81 @@
   const DAY_MAP = { Sun:0, Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6 };
 
   // Build date dropdown options from a days array (e.g. ['Tue','Thu'])
-  function buildDateOptions(days) {
+  // function buildDateOptions(days) {
+  //   const select = document.getElementById('booking-date');
+  //   select.innerHTML = '<option value="" disabled selected>Choose available date…</option>';
+  //   if (!days || days.length === 0) {
+  //     select.innerHTML += '<option disabled>No available dates set</option>';
+  //     return;
+  //   }
+  //   const dayNums = days.map(d => DAY_MAP[d]).filter(n => n !== undefined);
+  //   const today = new Date();
+  //   let added = 0;
+  //   for (let i = 1; i <= 60 && added < 20; i++) {
+  //     const d = new Date(today);
+  //     d.setDate(today.getDate() + i);
+  //     if (dayNums.includes(d.getDay())) {
+  //       const label = d.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric', year:'numeric' });
+  //       const val   = d.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric', year:'numeric' });
+  //       const opt   = document.createElement('option');
+  //       opt.value   = val;
+  //       opt.textContent = label;
+  //       select.appendChild(opt);
+  //       added++;
+  //     }
+  //   }
+  //   if (added === 0) select.innerHTML += '<option disabled>No available dates in next 60 days</option>';
+  // }
+
+  // ✅ USE SERVER-SIDE availableDates (already filtered: from today, excludes booked dates)
+const SERVER_AVAILABLE_DATES = @json($availableDates);
+// e.g. ["Tuesday, Apr 29, 2026", "Wednesday, Apr 30, 2026", ...]
+
+// function buildDateOptions(days) {
+//     const select = document.getElementById('booking-date');
+//     select.innerHTML = '<option value="" disabled selected>Choose available date…</option>';
+
+//     if (!SERVER_AVAILABLE_DATES || SERVER_AVAILABLE_DATES.length === 0) {
+//       select.innerHTML += '<option disabled>No available dates in next 30 days</option>';
+//       return;
+//     }
+
+//     // Filter server dates to only those matching this listing's allowed days
+//     const filtered = SERVER_AVAILABLE_DATES.filter(dateStr => {
+//       // dateStr is like "Tuesday, Apr 29, 2026" — extract the weekday abbreviation
+//       const weekday = new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short' }); // "Tue"
+//       return !days || days.length === 0 || days.includes(weekday);
+//     });
+
+//     if (filtered.length === 0) {
+//       select.innerHTML += '<option disabled>No available dates in next 30 days</option>';
+//       return;
+//     }
+
+//     filtered.forEach(dateStr => {
+//       const opt = document.createElement('option');
+//       opt.value = dateStr;
+//       opt.textContent = dateStr;
+//       select.appendChild(opt);
+//     });
+// }
+  // ✅ NEW buildDateOptions — uses per-listing precomputed dates
+function buildDateOptions(availableDates) {
     const select = document.getElementById('booking-date');
     select.innerHTML = '<option value="" disabled selected>Choose available date…</option>';
-    if (!days || days.length === 0) {
-      select.innerHTML += '<option disabled>No available dates set</option>';
-      return;
-    }
-    const dayNums = days.map(d => DAY_MAP[d]).filter(n => n !== undefined);
-    const today = new Date();
-    let added = 0;
-    for (let i = 1; i <= 60 && added < 20; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() + i);
-      if (dayNums.includes(d.getDay())) {
-        const label = d.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric', year:'numeric' });
-        const val   = d.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric', year:'numeric' });
-        const opt   = document.createElement('option');
-        opt.value   = val;
-        opt.textContent = label;
-        select.appendChild(opt);
-        added++;
-      }
-    }
-    if (added === 0) select.innerHTML += '<option disabled>No available dates in next 60 days</option>';
-  }
 
+    if (!availableDates || availableDates.length === 0) {
+        select.innerHTML += '<option disabled>No available dates in next 30 days</option>';
+        return;
+    }
+
+    availableDates.forEach(dateStr => {
+        const opt = document.createElement('option');
+        opt.value = dateStr;
+        opt.textContent = dateStr;
+        select.appendChild(opt);
+    });
+}
   // Update the avail-day chips in the booking sidebar
   function updateDayChips(days) {
     document.querySelectorAll('.avail-day').forEach(chip => {
@@ -691,19 +740,35 @@
   }
 
   // Called when collector clicks "Book Slot" on a service card
+  // function selectService(id, title, priceMin, priceMax, days) {
+  //   selectedListingId    = id;
+  //   selectedListingTitle = title;
+  //   selectedPriceMin     = priceMin;
+  //   selectedPriceMax     = priceMax;
+
+  //   // Update booking form for this specific listing
+  //   updateDayChips(days || []);
+  //   buildDateOptions(days || []);
+
+  //   // Scroll to sidebar booking widget smoothly
+  //   document.getElementById('booking-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //   // Highlight the date selector
+  //   const ds = document.getElementById('booking-date');
+  //   ds.style.borderColor = 'var(--amber)';
+  //   setTimeout(() => ds.style.borderColor = '', 2000);
+  // }
+
+  // ✅ NEW selectService
   function selectService(id, title, priceMin, priceMax, days) {
     selectedListingId    = id;
     selectedListingTitle = title;
     selectedPriceMin     = priceMin;
     selectedPriceMax     = priceMax;
 
-    // Update booking form for this specific listing
     updateDayChips(days || []);
-    buildDateOptions(days || []);
+    buildDateOptions(listingData[id]?.availableDates || []);  // ← uses per-listing dates
 
-    // Scroll to sidebar booking widget smoothly
     document.getElementById('booking-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    // Highlight the date selector
     const ds = document.getElementById('booking-date');
     ds.style.borderColor = 'var(--amber)';
     setTimeout(() => ds.style.borderColor = '', 2000);
@@ -842,9 +907,20 @@
 
   // ── AUTO-SELECT LISTING FROM URL (?listing=ID) ───────────
   // Embed all listing data for client-side lookup
+  // const listingData = {
+  //   @foreach($listings as $l)
+  //   {{ $l->id }}: { title: '{{ addslashes($l->title) }}', priceMin: {{ $l->price_min }}, priceMax: {{ $l->price_max }}, days: {!! json_encode($l->available_days ?? []) !!} },
+  //   @endforeach
+  // };
   const listingData = {
     @foreach($listings as $l)
-    {{ $l->id }}: { title: '{{ addslashes($l->title) }}', priceMin: {{ $l->price_min }}, priceMax: {{ $l->price_max }}, days: {!! json_encode($l->available_days ?? []) !!} },
+    {{ $l->id }}: {
+        title: '{{ addslashes($l->title) }}',
+        priceMin: {{ $l->price_min }},
+        priceMax: {{ $l->price_max }},
+        days: {!! json_encode($l->available_days ?? []) !!},
+        availableDates: {!! json_encode($profile->getAvailableDates($l->available_days ?? [])) !!}
+    },
     @endforeach
   };
 

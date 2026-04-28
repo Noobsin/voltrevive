@@ -416,10 +416,6 @@ Job #{{ $job->reference }} — {{ $job->booking->device_name }}
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           Booked: <strong>{{ $job->booking->requested_date->format('M j, Y') }}</strong>
         </div>
-        <div class="job-meta-item">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Est. completion: <strong>{{ $job->estimated_completion ? $job->estimated_completion->format('M j, Y') : 'TBD' }}</strong>
-        </div>
       </div>
     </div>
 
@@ -607,33 +603,9 @@ Job #{{ $job->reference }} — {{ $job->booking->device_name }}
 
       </div>{{-- end timeline-track --}}
 
-      {{-- ── TECH FOOTER: 7 stages ── --}}
-      <div class="timeline-footer tech-only">
-        <div class="tl-progress-wrap">
-          <div class="tl-progress-bar">
-            <div class="tl-progress-fill" style="width:43%"></div>
-          </div>
-          <div class="tl-progress-label">3 of 7 stages complete · Repair in progress</div>
-        </div>
-        <div class="tl-est">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Est. completion: <strong>{{ $job->estimated_completion ? $job->estimated_completion->format('M j, Y') : 'TBD' }}</strong>
-        </div>
-      </div>
+      {{-- ── TECH FOOTER removed (progress bar and est. completion removed) ── --}}
 
-      {{-- ── COLLECTOR FOOTER: 6 stages (no Repair Started) ── --}}
-      <div class="timeline-footer coll-only">
-        <div class="tl-progress-wrap">
-          <div class="tl-progress-bar">
-            <div class="tl-progress-fill" style="width:50%"></div>
-          </div>
-          <div class="tl-progress-label">3 of 6 stages complete · Awaiting payment</div>
-        </div>
-        <div class="tl-est">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Est. completion: <strong>{{ $job->estimated_completion ? $job->estimated_completion->format('M j, Y') : 'TBD' }}</strong>
-        </div>
-      </div>
+      {{-- ── COLLECTOR FOOTER removed (progress bar and est. completion removed) ── --}}
     </div>
 
     {{-- ══════════════════════════════════ --}}
@@ -704,7 +676,6 @@ Job #{{ $job->reference }} — {{ $job->booking->device_name }}
         <div class="detail-row"><span class="label">Technician</span><span class="value">{{ $job->booking->technicianProfile->user->name }} · {{ $job->booking->technicianProfile->location }}</span></div>
         <div class="detail-row"><span class="label">Booked</span><span class="value">{{ $job->booking->requested_date->format('M j, Y') }}</span></div>
         <div class="detail-row"><span class="label">Device Received</span><span class="value">Mar 20, 2026</span></div>
-        <div class="detail-row"><span class="label">Est. Complete</span><span class="value">{{ $job->estimated_completion ? $job->estimated_completion->format('M j, Y') : 'TBD' }}</span></div>
       </div>
     </div>
 
@@ -733,7 +704,7 @@ Job #{{ $job->reference }} — {{ $job->booking->device_name }}
       <div class="side-card-header">⚡ Actions</div>
       <div class="side-card-body">
         <div class="action-btns">
-          @if($job->status === 'confirmed')\
+          @if($job->status === 'confirmed')
           <button class="btn-action-primary" onclick="startRepair()" style="width:100%;background:var(--amber);border:none;color:#161310;padding:0.75rem;border-radius:8px;font-weight:700;font-size:0.92rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:0.5rem;">
             🔧 Start Repair
           </button>
@@ -968,12 +939,7 @@ Job #{{ $job->reference }} — {{ $job->booking->device_name }}
   }
 
   function updateTechProgress() {
-    const done = Object.values(tickState).filter(Boolean).length;
-    const pct  = Math.round((done/7)*100);
-    const fill = document.querySelector('.timeline-footer.tech-only .tl-progress-fill');
-    const lbl  = document.querySelector('.timeline-footer.tech-only .tl-progress-label');
-    if (fill) fill.style.width = pct+'%';
-    if (lbl)  lbl.textContent  = done+' of 7 stages complete';
+    // progress bar removed
   }
 
   function startRepair() {

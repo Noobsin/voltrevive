@@ -85,30 +85,57 @@ class TechnicianProfile extends Model
      * based on the technician's availability_windows settings,
      * excluding dates that already have Pending or Confirmed bookings.
      */
-    public function getAvailableDates(): array
-    {
-        $windows      = $this->availability_windows;            // e.g. {"days":["Tue","Wed","Thu"]}
-        $allowedDays  = $windows['days'] ?? [];
+    // public function getAvailableDates(): array
+    // {
+    //     $windows      = $this->availability_windows;            // e.g. {"days":["Tue","Wed","Thu"]}
+    //     $allowedDays  = $windows['days'] ?? [];
 
-        // Dates already blocked by existing bookings
-        $blocked = $this->bookings()
-                        ->whereIn('status', ['pending', 'confirmed'])
-                        ->pluck('requested_date')
-                        ->map(fn($d) => $d->format('Y-m-d'))
-                        ->toArray();
+    //     // Dates already blocked by existing bookings
+    //     $blocked = $this->bookings()
+    //                     ->whereIn('status', ['pending', 'confirmed'])
+    //                     ->pluck('requested_date')
+    //                     ->map(fn($d) => $d->format('Y-m-d'))
+    //                     ->toArray();
 
-        $available = [];
-        $today     = now();
+    //     $available = [];
+    //     $today     = now();
 
-        for ($i = 1; $i <= 30; $i++) {
-            $date    = $today->copy()->addDays($i);
-            $dayName = $date->format('D');                      // "Mon", "Tue", etc.
+    //     for ($i = 1; $i <= 30; $i++) {
+    //         $date    = $today->copy()->addDays($i);
+    //         $dayName = $date->format('D');                      // "Mon", "Tue", etc.
 
-            if (in_array($dayName, $allowedDays) && ! in_array($date->format('Y-m-d'), $blocked)) {
-                $available[] = $date->format('l, M j, Y');     // "Tuesday, Mar 18, 2026"
-            }
+    //         if (in_array($dayName, $allowedDays) && ! in_array($date->format('Y-m-d'), $blocked)) {
+    //             $available[] = $date->format('l, M j, Y');     // "Tuesday, Mar 18, 2026"
+    //         }
+    //     }
+
+    //     return $available;
+    // }
+
+    // ✅ NEW — accepts per-listing days, falls back to profile-level days
+public function getAvailableDates(array $days = []): array
+{
+    // Use passed-in days if provided, otherwise fall back to profile-level
+    $allowedDays = !empty($days) ? $days : ($this->availability_windows['days'] ?? []);
+
+    $blocked = $this->bookings()
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->pluck('requested_date')
+                    ->map(fn($d) => $d->format('Y-m-d'))
+                    ->toArray();
+
+    $available = [];
+    $today     = now();
+
+    for ($i = 1; $i <= 30; $i++) {
+        $date    = $today->copy()->addDays($i);
+        $dayName = $date->format('D');
+
+        if (in_array($dayName, $allowedDays) && ! in_array($date->format('Y-m-d'), $blocked)) {
+            $available[] = $date->format('l, M j, Y');
         }
-
-        return $available;
     }
+
+    return $available;
+}
 }

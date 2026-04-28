@@ -31,7 +31,7 @@ class ReviewController extends Controller
     {
         $request->validate([
             'rating'  => ['required', 'integer', 'min:1', 'max:5'],
-            'comment' => ['required', 'string', 'min:10', 'max:600'],
+            'comment' => ['nullable', 'string', 'max:600'],
         ]);
 
         $job = Job::with('booking.technicianProfile')->findOrFail($jobId);

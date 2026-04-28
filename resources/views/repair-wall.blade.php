@@ -183,34 +183,6 @@
 
   {{-- SIDEBAR --}}
   <aside class="wall-sidebar">
-    <div class="side-card">
-      <div style="display:grid;grid-template-columns:1fr 1fr;">
-        <div class="stat-mini"><strong>{{ $totalPosts }}</strong><span>Open Appeals</span></div>
-        <div class="stat-mini"><strong>{{ $recentPosts }}</strong><span>This Week</span></div>
-      </div>
-    </div>
-
-    <div class="side-card">
-      <div class="side-card-title">🔧 Top Devices on the Wall</div>
-      <div class="hot-list">
-        @php
-          $topDevices = $posts->groupBy('device_name')
-            ->map->count()
-            ->sortDesc()
-            ->take(5);
-        @endphp
-        @forelse($topDevices as $device => $count)
-        <div class="hot-item">
-          <span class="hot-device">{{ $device }}</span>
-          <span class="hot-count">{{ $count }} {{ $count === 1 ? 'appeal' : 'appeals' }}</span>
-        </div>
-        @empty
-        <div style="font-size:0.82rem;color:var(--muted);padding:0.5rem 0;">No posts yet.</div>
-        @endforelse
-      </div>
-      <p style="font-size:0.75rem;color:var(--muted);margin-top:1rem;line-height:1.5;">Devices with the most repair appeals posted by the community.</p>
-    </div>
-
     <div class="side-card" id="tech-recruitment-card">
       <div class="side-card-title">Are You a Technician?</div>
       <p style="font-size:0.83rem;color:var(--muted);line-height:1.6;margin-bottom:1rem;">If you can help with any of these devices, contact the collector directly or list your service officially on the platform.</p>

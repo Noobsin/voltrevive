@@ -254,27 +254,7 @@
           </div>
         </div>
 
-        {{-- WRITTEN REVIEW --}}
-        <div class="comment-section">
-          <label class="form-label" for="review-text">Written Review <span style="color:var(--amber)">*</span></label>
-          <textarea class="form-textarea" id="review-text" placeholder="Describe the restoration — what was the fault, how well was it fixed, how was communication throughout? Other collectors will read this before booking…" maxlength="600" oninput="document.getElementById('char-counter').textContent=(600-this.value.length)+' characters left'" required></textarea>
-          <div class="char-counter" id="char-counter">600 characters left</div>
-        </div>
 
-        {{-- QUICK TAGS --}}
-        <div class="tags-section">
-          <span class="form-label">Quick Tags (optional)</span>
-          <div class="tag-options">
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">✓ Arrived safely packed</button>
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">✓ Sounds perfect</button>
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">✓ Looks like new</button>
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">✓ Proactive updates</button>
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">✓ On time</button>
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">✓ Would use again</button>
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">⚠ Slight delay</button>
-            <button type="button" class="tag-chip" onclick="this.classList.toggle('selected')">⚠ Minor cosmetic issue</button>
-          </div>
-        </div>
 
       </form>
     </div>
@@ -321,10 +301,8 @@
   }
 
   function checkSubmit() {
-    const text = document.getElementById('review-text').value.trim();
-    document.getElementById('submit-btn').disabled = !(currentRating > 0 && text.length > 10);
+    document.getElementById('submit-btn').disabled = !(currentRating > 0);
   }
-  document.getElementById('review-text').addEventListener('input', checkSubmit);
 
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
   const jobId = {{ $job->id }};
@@ -332,8 +310,6 @@
   function submitReview(e) {
     if (e) e.preventDefault();
     if (currentRating === 0) { alert('Please select a star rating.'); return; }
-    const comment = document.getElementById('review-text').value.trim();
-    if (!comment) { alert('Please write a review.'); return; }
 
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
@@ -342,7 +318,7 @@
     fetch('/jobs/' + jobId + '/review', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-      body: JSON.stringify({ rating: currentRating, comment }),
+      body: JSON.stringify({ rating: currentRating, comment: '' }),
     })
     .then(r => r.json())
     .then(data => {

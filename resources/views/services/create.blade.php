@@ -3,7 +3,7 @@
 
 @section('styles')
 <style>
-  .page-wrap { max-width:1100px; margin:0 auto; padding:3rem 2rem 5rem; display:grid; grid-template-columns:1fr 380px; gap:2.5rem; position:relative; z-index:1; }
+  .page-wrap { max-width:1100px; margin:0 auto; padding:3rem 2rem 5rem; position:relative; z-index:1; }
   .form-card { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; overflow:hidden; animation:fadeUp 0.4s ease; }
   .form-card-header { padding:2rem 2rem 1.5rem; border-bottom:1px solid var(--border); background:var(--bg-card2); }
   .form-card-header h1 { font-size:1.8rem; line-height:1.15; }
@@ -237,48 +237,6 @@
 
   {{-- SIDEBAR --}}
   <aside class="sidebar">
-    <div class="info-card">
-      <div class="info-card-title">Live Preview</div>
-      <div class="preview-card">
-        <div class="preview-header">⚡ How it appears in Browse</div>
-        <div class="preview-images">
-          <div class="preview-img-slot" id="prev-before"><span>Before photo</span></div>
-          <div class="preview-img-slot" id="prev-after"><span>After photo</span></div>
-        </div>
-        <div class="preview-body">
-          <div class="preview-title" id="prev-title">Your service title will appear here</div>
-          <div class="preview-meta">Your Name · ⭐ New listing</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="info-card">
-      <div class="info-card-title">Approval Process</div>
-      <div class="status-badge"><div class="status-dot"></div>Reviewed within 48 hrs</div>
-      <div class="process-steps">
-        <div class="process-step">
-          <div class="process-num">1</div>
-          <div class="process-text"><p>You submit this form</p><span>Listing saved as "Pending"</span></div>
-        </div>
-        <div class="process-step">
-          <div class="process-num">2</div>
-          <div class="process-text"><p>Admin reviews your proof</p><span>Before/After images are verified</span></div>
-        </div>
-        <div class="process-step">
-          <div class="process-num">3</div>
-          <div class="process-text"><p>Listing goes live</p><span>Appears in Browse Restorations</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="info-card">
-      <div class="info-card-title">Listing Requirements</div>
-      <div class="requirements">
-        <div class="req-item"><span class="req-icon">⚡</span><span>Before & After images from a <strong>real job you completed</strong></span></div>
-        <div class="req-item"><span class="req-icon">⚡</span><span>Specific device models listed — not just broad categories</span></div>
-        <div class="req-item"><span class="req-icon">⚡</span><span>Accurate price range — you can refine after diagnosis</span></div>
-      </div>
-    </div>
   </aside>
 </div>
 

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminAuthController;
@@ -71,11 +70,6 @@ Route::middleware('auth')->group(function () {
     // Dashboards
     Route::get('/collector-dashboard',  [CollectorDashboardController::class,  'index']);
     Route::get('/technician-dashboard', [TechnicianDashboardController::class, 'index']);
-
-    // Profile
-    Route::get('/profile/edit',      [ProfileController::class, 'edit']);
-    Route::patch('/profile/update',  [ProfileController::class, 'update']);
-    Route::patch('/profile/password',[ProfileController::class, 'updatePassword']);
 
     // Collector pages
     Route::get('/collector-portfolio',  [CollectorPortfolioController::class, 'index']);
