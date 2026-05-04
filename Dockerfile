@@ -27,4 +27,4 @@ RUN php artisan config:clear
 EXPOSE 8080
 
 # Start server
-CMD php -S 0.0.0.0:8080 -t public
+CMD php -S 0.0.0.0:$PORT -t public
