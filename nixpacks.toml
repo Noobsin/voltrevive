@@ -2,14 +2,15 @@
 nixPkgs = ["php84", "composer", "nodejs"]
 
 [phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader"]
+cmds = [
+  "composer install --no-dev --optimize-autoloader"
+]
 
 [phases.build]
 cmds = [
-  "php artisan config:clear",
-  "php artisan cache:clear",
-  "php artisan view:clear",
-  "php artisan route:clear"
+  "npm install",
+  "npm run build",
+  "php artisan config:clear"
 ]
 
 [start]
