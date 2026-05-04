@@ -37,7 +37,6 @@ class ServiceListingController extends Controller
         $request->validate([
             'title'            => ['required', 'string', 'max:255'],
             'category'         => ['required', 'string'],
-            'supported_models' => ['required', 'string'],   // JSON string from hidden input
             'description'      => ['required', 'string'],
             'price_min'        => ['required', 'numeric', 'min:0'],
             'price_max'        => ['required', 'numeric', 'min:0', 'gte:price_min'],
@@ -52,11 +51,6 @@ class ServiceListingController extends Controller
             'after_image.image'    => 'After photo must be an image file.',
         ]);
 
-        // Decode the supported models JSON string from the hidden input
-        $models = json_decode($request->supported_models, true) ?? [];
-        if (empty($models)) {
-            return back()->withErrors(['supported_models' => 'Please add at least one supported device model.'])->withInput();
-        }
 
         // Decode availability days
         $days = json_decode($request->availability_days, true) ?? [];
@@ -75,7 +69,6 @@ class ServiceListingController extends Controller
             'technician_profile_id' => $profile->id,
             'title'                 => $request->title,
             'category'              => $request->category,
-            'supported_models'      => $models,
             'description'           => $request->description,
             'price_min'             => $request->price_min,
             'price_max'             => $request->price_max,

@@ -166,15 +166,6 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Supported Device Models <span class="req">*</span></label>
-              <div class="tag-input-wrap" id="model-tags" onclick="this.querySelector('input').focus()">
-                <div class="tag">Roland Juno-106 <button type="button" onclick="this.closest('.tag').remove()">×</button></div>
-                <input type="text" class="tag-input" placeholder="Type model, press Enter…" onkeydown="addTag(event)"/>
-              </div>
-              <p class="hint">Press Enter to add each model.</p>
-              <input type="hidden" name="supported_models" id="supported-models-input"/>
-            </div>
-            <div class="form-group">
               <label class="form-label">Service Description <span class="req">*</span></label>
               <textarea class="form-textarea" name="description" placeholder="Describe exactly what you do: which components you replace, the process, and what the device will be like after restoration…" rows="4" required></textarea>
             </div>
@@ -251,20 +242,6 @@
 </div>
 
 <script>
-  function addTag(e) {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
-    const input = e.target;
-    const val = input.value.trim();
-    if (!val) return;
-    const wrap = document.getElementById('model-tags');
-    const tag = document.createElement('div');
-    tag.className = 'tag';
-    tag.innerHTML = `${val} <button type="button" onclick="this.closest('.tag').remove()">×</button>`;
-    wrap.insertBefore(tag, input);
-    input.value = '';
-  }
-
   function previewImage(input, zoneId, type) {
     if (!input.files || !input.files[0]) return;
     const reader = new FileReader();
@@ -292,13 +269,6 @@
   // Collect tag and day values into hidden inputs, then submit
   document.getElementById('listing-form').addEventListener('submit', function(e) {
 
-    // 1. Collect supported models from visible tag divs
-    const tags = document.querySelectorAll('#model-tags .tag');
-    const models = Array.from(tags).map(function(t) {
-      // firstChild is the text node before the × button
-      return t.childNodes[0].textContent.trim();
-    }).filter(function(m) { return m.length > 0; });
-    document.getElementById('supported-models-input').value = JSON.stringify(models);
 
     // 2. Collect selected availability days
     const activeDays = document.querySelectorAll('.day-chip.active');
@@ -307,12 +277,9 @@
     });
     document.getElementById('availability-days-input').value = JSON.stringify(days);
 
-    // 3. Client-side guard — stop submit if either is empty
-    if (models.length === 0) {
-      e.preventDefault();
-      alert('Please add at least one supported device model.');
-      return;
-    }
+    
+
+    
     if (days.length === 0) {
       e.preventDefault();
       alert('Please select at least one available day.');
