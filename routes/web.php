@@ -38,9 +38,6 @@ Route::get('/api/exchange-rate',   [ExchangeRateController::class,  'show']);
 Route::post('/api/rewrite-description', [CohereController::class, 'rewrite']);
 Route::post('/contact',   [ContactController::class, 'store']);
 Route::get('/comparison', [CompareController::class, 'index']);
-Route::get('/', function () {
-    return view('welcome');
-});
 
 // ── TECHNICIAN PROFILES & PORTFOLIOS (public) ────────────────
 Route::get('/technicians/{id}',           [TechnicianController::class,          'show'])->where('id','[0-9]+');
